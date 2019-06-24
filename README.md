@@ -21,10 +21,7 @@ All the organisations will be able to list out some causes for which they are co
 
 ## Communication
 
-Please join our Gitter and Slack channel to discuss questions regarding the project:
-
-* Gitter: https://gitter.im/dsciitpatna/Project-Karna
-* Slack: https://bit.ly/2S1adeD
+Please join our Karna channel on Discord server at https://discord.gg/7Dykj7d to discuss anything regarding the project.
 
 
 ## Install and contribute
