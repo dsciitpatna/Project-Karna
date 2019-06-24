@@ -29,7 +29,7 @@ Please join our Karna channel on Discord server at https://discord.gg/7Dykj7d to
 $ git clone https://github.com/dsciitpatna/Project-Karna.git
 ```
 
-* You should join the Gitter and Slack channel to stay connected with mentors and other contributors.
+* You should Discord server to stay connected with mentors and other contributors.
 * Raise an issue before making Pull Requests.
 
 
