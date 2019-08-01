@@ -2,7 +2,7 @@
 
 ## Overview
 
-Karna is an Ethereum-based Decentralised Application that enables charities to collect and track their donations directly on the blockchain. The decentralised nature of blockchain allows users to see all of their donations in one place, as well as a transparent view of how their donations were used. As cryptocurrencies are seen as disrupting charity sphere, there is need to rebuild trust so that people can safely donate to charity and see their money used for what it's meant for.
+Karna is an Hyperledger fabric-based Decentralised Application that enables charities to collect and track their donations directly on the blockchain. The decentralised nature of blockchain allows users to see all of their donations in one place, as well as a transparent view of how their donations were used.
 
 ## Features
 
@@ -32,9 +32,19 @@ $ git clone https://github.com/dsciitpatna/Project-Karna.git
 * You should Discord server to stay connected with mentors and other contributors.
 * Raise an issue before making Pull Requests.
 
+## Implementation
+    Karna is implemented on Hyperledger-fabric network **Dnation Network**
+###### Players of Donation Network
+    **Peers :**
+    1.NGOs : NGO peers propose project to be funded by Donors.
+    2.Validation Authority (VA) : Validation Authority (VA) will register valid NGO to the Donation Network. Validation Authority is also responsible for endorsing every donation request generated                               by donor.
+    **Orderer :**
+    1.Validation Authority is itself will provide ordering service for Donation network.
+###### About Project
+    In the Donation network **Project** are plan proposed by the NGO to solve any problem in our socity.Projects can be created by any NGO present in **Donation Network**.Every Project will have pre-defined cases at which will remaining money will revert back to donors.Any function like *giveDonation* to project should be endorsed by all the Validation Authority and NGO who have proposed that project. 
 
 ## Technology stack to be used for the project
 
-* Solidity
-* Truffle suite
-* Basic knowledge of how transaction works in Ethereum would also help.
+* Golang
+* Docker
+* Basic knowledge of how transaction works in Hyperledger-fabric would also help.
