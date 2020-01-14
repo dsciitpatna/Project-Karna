@@ -1,0 +1,35 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: gov.com
+    EnableNodeOUs: false
+    Specs:
+      - Hostname: orderer
+        CommonName: "{{.Hostname}}"
+PeerOrgs:
+  - Name: NGOs
+    Domain: ngo.com
+    CA:
+      Hostname: ngoca
+      Country: India
+      Province: Delhi
+      Locality: Hauz Khaz
+      OrganizationalUnit: NGOs
+      StreetAddress: All over the India
+      PostalCode: NONE
+    Specs:
+      - Hostname: devpeer
+        CommonName: "{{.Hostname}}"
+  - Name: Volunteers
+    Domain: vol.com
+    CA:
+      Hostname: volunteersca
+      Country: India
+      Province: Patna
+      Locality: Bihta
+      OrganizationalUnit: Volunteers
+      StreetAddress: All over the India
+      PostalCode: NONE
+    Specs:
+      - Hostname: devvol
+        CommonName: "{{.Hostname}}"
+    
