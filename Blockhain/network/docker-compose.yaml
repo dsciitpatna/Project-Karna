@@ -1,0 +1,159 @@
+version: '2'
+networks: 
+    karna:
+volumes: 
+    data-devpeer:
+    data-firstngo:
+    data-devvol:
+    data-volunteersca:
+    data-ngoca:
+    data-orderer:
+    data-devpeerworld:
+    data-firstngoworld:
+    data-devvolworld:
+services: 
+    ##################################################peers#####################################################
+    devpeer:
+        extends: 
+            file: base.yaml
+            service: peer-base
+        container_name: devpeer
+        networks: 
+            - karna
+        ports: 
+            - 7051:7051
+        depends_on: 
+            - devpeerworld
+        environment: 
+            - CORE_PEER_ID=devpeer
+            - CORE_PEER_ADDRESS=devpeer:7051
+            - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+            - CORE_PEER_LOCALMSPID=NGOMSP
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=devpeerworld:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME= #username for worldstatedb
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD= # password
+        volumes: 
+            - ./crypto-config/peerOrganizations/ngo.com/peers/devpeer:/peer
+            - data-devpeer:/var/hyperledger/production
+    firstngo:
+        extends: 
+            file: base.yaml
+            service: peer-base
+        container_name: firstngo
+        networks: 
+            - karna
+        ports: 
+            - 8051:7051
+        depends_on: 
+            - firstngoworld
+        environment: 
+            - CORE_PEER_ID=firstngo
+            - CORE_PEER_ADDRESS=firstngo:7051
+            - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+            - CORE_PEER_LOCALMSPID=NGOMSP
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=firstngoworld:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME= #username for worldstatedb
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD= # password
+        volumes: 
+            - ./crypto-config/peerOrganizations/ngo.com/peers/firstngo:/peer
+            - data-firstngoworld:/var/hyperledger/production
+    devvol:
+        extends: 
+            file: base.yaml
+            service: peer-base
+        container_name: devvol
+        networks: 
+            - karna
+        ports: 
+            - 9051:7051
+        depends_on: 
+            - devvolworld
+        environment: 
+            - CORE_PEER_ID=devvol
+            - CORE_PEER_ADDRESS=devvol:7051
+            - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+            - CORE_PEER_LOCALMSPID=VolunteersMSP
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=devvolworld:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME= #username for worldstatedb
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD= # password
+        volumes: 
+            - ./crypto-config/peerOrganizations/vol.com/peers/devvol:/peer
+            - data-devvol:/var/hyperledger/production
+##################################################################################
+######################CA's########################################################
+    ngoca:
+        extends: 
+            file: base.yaml
+            service: ca-base
+        networks: 
+            - karna
+        ports: 
+            - 7054:7054
+        container_name: ngoca
+        environment: 
+            - FABRIC_CA_SERVER_CA_NAME=ngoca
+        volumes: 
+            - ./crypto-config/peerOrganizations/ngo.com/ca:/ca
+            - data-ngoca:/etc/hyperledger/fabric-ca-server             
+    volunteersca:
+        extends: 
+            file: base.yaml
+            service: ca-base
+        networks: 
+            - karna
+        ports: 
+            - 9054:7054
+        container_name: volunteersca
+        environment: 
+            - FABRIC_CA_SERVER_CA_NAME=volunteersca
+        volumes: 
+            - ./crypto-config/peerOrganizations/vol.com/ca:/ca
+            - data-ngoca:/etc/hyperledger/fabric-ca-server
+########################################################################################
+###############################Orderer##################################################
+    orderer:
+        extends: 
+            file: base.yaml
+            service: orderer-base
+        container_name: orderer
+        networks: 
+            - karna
+        ports: 
+            - 7050:7050
+        environment: 
+            - ORDERER_GENERAL_LOCALMSPID=GovernmentMSP
+        volumes: 
+            - ./channel-artifacts:/channel-artifacts
+            - ./crypto-config/ordererOrganizations/gov.com/orderers/orderer:/orderer
+            - data-orderer:/var/hyperledger/production/orderer
+######################################################################################
+#####################CouchDB##########################################################
+    devpeerworld:
+        extends: 
+            file: base.yaml
+            service: couchdb
+        container_name: devpeerworld
+        networks: 
+            - karna
+        ports: 
+            - 5984:5984
+        volumes: 
+            - data-devpeerworld:/opt/couchdb
+    devvolworld:
+        extends: 
+            file: base.yaml
+            service: couchdb
+        container_name: devvolworld
+        networks: 
+            - karna
+        volumes: 
+            - data-devvolworld:/opt/couchdb
+    firstngoworld:
+        extends: 
+            file: base.yaml
+            service: couchdb
+        container_name: firstngoworld
+        networks: 
+            - karna
+        volumes: 
+            - data-firstngoworld:/opt/couchdb
