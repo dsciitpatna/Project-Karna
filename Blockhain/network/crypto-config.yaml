@@ -2,6 +2,12 @@ OrdererOrgs:
   - Name: Orderer
     Domain: gov.com
     EnableNodeOUs: false
+    CA:
+      Hostname: govca
+      Country: India
+      Province: Delhi
+      Locality: Hauz Khaz
+      OrganizationalUnit: Central Government
     Specs:
       - Hostname: orderer
         CommonName: "{{.Hostname}}"
@@ -19,13 +25,15 @@ PeerOrgs:
     Specs:
       - Hostname: devpeer
         CommonName: "{{.Hostname}}"
+      - Hostname: firstngo
+        CommonName: "{{.Hostname}}"
   - Name: Volunteers
     Domain: vol.com
     CA:
       Hostname: volunteersca
       Country: India
       Province: Patna
-      Locality: Bihta
+      Locality: IIT Patna
       OrganizationalUnit: Volunteers
       StreetAddress: All over the India
       PostalCode: NONE

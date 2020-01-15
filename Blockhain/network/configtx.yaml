@@ -1,0 +1,139 @@
+Organizations:
+    - &Government
+        Name: Government
+        ID: GovernmentMSP
+        MSPDir: ./crypto-config/ordererOrganizations/gov.com/msp
+        Policies: &GovernmentPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('GovernmentMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('GovernmentMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('GovernmentMSP.admin')"
+    - &NGO
+        Name: NGO
+        ID: NGOMSP
+        MSPDir: ./crypto-config/peerOrganizations/ngo.com/msp
+        Policies: &NGOPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('NGOMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('NGOMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('NGOMSP.admin')"
+        AnchorPeers:
+            - Host: devpeer
+              Port: 7051
+    - &Volunteers
+        Name: Volunteers
+        ID: VolunteersMSP
+        MSPDir: ./crypto-config/peerOrganizations/vol.com/msp
+        Policies: &VolunteersPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('VolunteersMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('VolunteersMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('VolunteersMSP.admin')"
+        AnchorPeers:
+            - Host: devvol
+              Port: 7051
+Orderer: &OrdererSetup
+    OrdererType: solo
+    Addresses:
+        - orderer:7050
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta 
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+    BatchTimeout: 2s #By changing this tps can be incressed
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 98 MB
+        PreferredMaxBytes: 512 KB
+Application: &ApplicationSetup
+    ACLs: &ACLsDefault
+        lscc/ChaincodeExists: /Channel/Application/Readers
+        lscc/GetDeploymentSpec: /Channel/Application/Readers
+        lscc/GetChaincodeData: /Channel/Application/Readers
+        lscc/GetInstantiatedChaincodes: /Channel/Application/StrictAdminPolicy
+        qscc/GetChainInfo: /Channel/Application/StrictAdminPolicy
+        qscc/GetBlockByNumber: /Channel/Application/Readers
+        qscc/GetBlockByHash: /Channel/Application/Readers
+        qscc/GetTransactionByID: /Channel/Application/Readers
+        qscc/GetBlockByTxID: /Channel/Application/Readers
+        cscc/GetConfigBlock: /Channel/Application/Readers
+        cscc/GetConfigTree: /Channel/Application/Readers
+        cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
+        peer/Propose: /Channel/Application/Writers
+        peer/ChaincodeToChaincode: /Channel/Application/Readers
+        event/Block: /Channel/Application/Readers
+        event/FilteredBlock: /Channel/Application/Readers
+    Policies: &ApplicationDefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        StrictAdminPolicy:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+    Organizations:
+Channel: &ChannelSetup
+    Policies:
+      Readers:
+          Type: ImplicitMeta
+          Rule: "ANY Readers"
+      Writers:
+          Type: ImplicitMeta
+          Rule: "ANY Writers"
+      Admins:
+          Type: ImplicitMeta
+          Rule: "MAJORITY Admins"
+Profiles:
+    Genesis:
+        <<: *ChannelSetup
+        Orderer:
+            <<: *OrdererSetup
+            Organizations:
+                - <<: *Government
+        #Application:
+        #    <<: *ApplicationSetup
+        #    Organizations:
+        #        - <<: *NGO
+        #        - <<: *Volunteers
+        Consortiums:
+            KarnaConsortium:
+                Organizations:
+                    - <<: *NGO
+                    - <<: *Volunteers
+    KarnaChannel:
+        <<: *ChannelSetup
+        Consortium: KarnaConsortium
+        Application:
+            <<: *ApplicationSetup
+            Organizations:
+                - <<: *NGO
+                - <<: *Volunteers
