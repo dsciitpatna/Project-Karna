@@ -20,10 +20,15 @@ func getState(stub shim.ChaincodeStubInterface, key string) ([]byte, bool, error
 	return byteState, true, nil
 }
 func getUserKey(stub shim.ChaincodeStubInterface, loginid string) string {
-	key, err := stub.CreateCompositeKey(USERKEY, []string{loginid})
-	if err != nil {
-		return ""
-	}
+	key, _ := stub.CreateCompositeKey(USERKEY, []string{loginid})
+	return key
+}
+func getNGOKey(stub shim.ChaincodeStubInterface,loginid string) string  {
+	key,_ := stub.CreateCompositeKey(NGOKEY,[]string{loginid})
+	return key
+}
+func getMissionKey(stub shim.ChaincodeStubInterface,ngo, mission string) string  {
+	key,_:= stub.CreateCompositeKey(MISSIONSKEY,[]string{ngo,mission})
 	return key
 }
 func getLoginKey(stub shim.ChaincodeStubInterface, loginid string) string {
@@ -41,7 +46,7 @@ func createJWT(loginid string, secret []byte) (string, error) {
 	claim := &Claims{
 		LoginID: loginid,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(2*time.Minute).Unix(),
+			ExpiresAt: time.Now().Add(2*time.Hour).Unix(),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,claim)
@@ -51,10 +56,10 @@ func createJWT(loginid string, secret []byte) (string, error) {
 	}
 	return tokenString,nil
 }
-func authToken(tokenString string, secret []byte) bool {
+func authToken(tokenString string, secret []byte) (bool,string) {
 	c:=&Claims{}
 	tkn,_:= jwt.ParseWithClaims(tokenString,c,func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
-	return tkn.Valid
+	return tkn.Valid ,c.LoginID
 }

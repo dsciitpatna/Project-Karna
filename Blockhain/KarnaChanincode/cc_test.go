@@ -13,18 +13,39 @@ func Test(t *testing.T) {
 	if response.Status != shim.OK {
 		t.FailNow()
 	}
-	ccargs := SetupArgsArray("userRegistration","zzocker","Pritam","pw")
-	stub.MockInvoke("in",ccargs)
-	ccargs =  SetupArgsArray("getUser","zzocker")
-	response =  stub.MockInvoke("c",ccargs)
+	ccargs := SetupArgsArray("userRegistration", "zzocker", "Pritam", "pw")
+	stub.MockInvoke("in", ccargs)
+
+	ccargs = SetupArgsArray("userGateway", "userLogin", "zzocker", "pw")
+	response = stub.MockInvoke("c", ccargs)
 	t.Log(string(response.Payload))
-	ccargs = SetupArgsArray("userGateway","userLogin","zzocker","pw")
-	response =  stub.MockInvoke("c",ccargs)
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6Inp6b2NrZXIiLCJleHAiOjE1NzkzODc3Mjd9.EHQh6kqgJ_rmJdXbGlJXdsfPIY9U5uTTIy6gSy8NBxM"
+	ccargs = SetupArgsArray("userGateway", token)
+	response = stub.MockInvoke("f", ccargs)
 	t.Log(string(response.Payload))
-	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6Inp6b2NrZXIiLCJleHAiOjE1NzkyODI3NDJ9.Pj2SWrQAnRQoXRFUOAef8bpYz-AjwyV-KS5HjiuSKSU"
-	ccargs = SetupArgsArray("userGateway",token)
-	response =  stub.MockInvoke("f",ccargs)
+	ccargs = SetupArgsArray("NGORegistration","ngo1","NGO1","IITP","Nss","pw")
+	stub.MockInvoke("f", ccargs)
+	ccargs = SetupArgsArray("ngoGateway","userLogin","ngo1","pw")
+	response = stub.MockInvoke("f", ccargs)
 	t.Log(string(response.Payload))
+	token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6Im5nbzEiLCJleHAiOjE1NzkzODc3NTR9.Zu6JgaFUMhVTjJzEQodrZvDHkMkXHytDaMHRaHmmGf4"
+	ccargs = SetupArgsArray("ngoGateway",token)
+	response = stub.MockInvoke("f", ccargs)
+	t.Log(string(response.Payload))
+	ccargs = SetupArgsArray("ngoGateway",token,"createMission","first","FirstMission","hello no dec","5000")
+	response = stub.MockInvoke("f", ccargs)
+	t.Log(string(response.Payload))
+	token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6Inp6b2NrZXIiLCJleHAiOjE1NzkzODc3Mjd9.EHQh6kqgJ_rmJdXbGlJXdsfPIY9U5uTTIy6gSy8NBxM"
+	ccargs = SetupArgsArray("userGateway",token,"donate","ngo1","first","50")
+	response = stub.MockInvoke("f", ccargs)
+	t.Log(string(response.Payload))
+	// ccargs = SetupArgsArray("ngoGateway","userLogin","ngo1","pw")
+	// response = stub.MockInvoke("f", ccargs)
+	// t.Log(string(response.Payload))
+	// token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbl9pZCI6Im5nbzEiLCJleHAiOjE1NzkzODY4NjR9.lV7kaiE8JuTrI45VbFylgkh7AxFjfEO6FDA0S5aaroQ"
+	// ccargs = SetupArgsArray("userGateway", token)
+	// response = stub.MockInvoke("f", ccargs)
+	// t.Log(string(response.Message))
 }
 
 func SetupArgsArray(funcName string, args ...string) [][]byte {

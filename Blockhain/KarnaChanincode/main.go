@@ -33,11 +33,17 @@ func (c *KarnaChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response 
 	if funName == "userRegistration" {
 		return userRegistration(stub, args)
 	}
+	if funName == "NGORegistration" {
+		return NGORegistration(stub, args)
+	}
 	if funName == "getUser" {
 		return getUserTest(stub, args)
 	}
 	if funName == "userGateway" {
-		return userGateway(stub,args)
+		return userGateway(stub, args)
+	}
+	if funName == "ngoGateway" {
+		return ngoGateway(stub, args)
 	}
 	return peer.Response{
 		Status:  200,
