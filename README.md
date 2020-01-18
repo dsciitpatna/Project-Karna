@@ -56,4 +56,5 @@ In the Donation network **Project** are plan proposed by the NGO to solve any pr
 
 * Golang
 * Docker
+* Node.js
 * Basic knowledge of how transaction works in Hyperledger-fabric would also help.
