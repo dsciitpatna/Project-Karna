@@ -1,0 +1,66 @@
+name: "karna~network"
+version: "0"
+description: "Karna netwokr connection profile"
+clients:
+    ngo:
+        organizations: NGOs
+    vol: 
+        organizations: Volunteers
+channels:
+    karna:
+        orderers:
+            - orderer
+        peers:
+            devpeer:
+                endorsingPeer: true
+                chaincodeQuery: true
+                ledgerQuery: true
+                eventSource: true
+            devvol:
+                endorsingPeer: true
+                chaincodeQuery: true
+                ledgerQuery: true
+                eventSource: false
+            firstngo:
+                endorsingPeer: false
+                chaincodeQuery: true
+                ledgerQuery: true
+                eventSource: true
+organizations:
+    NGOs:
+        mspid:
+        peers:
+            - devpeer
+            - firstngo
+        certificateAuthorities:
+            - ngoca
+    Volunteers:
+        mspid:
+        peers:
+            - devvol
+        certificateAuthorities:
+            - volunteersca
+peers:
+    devpeer:
+        url: https://localhost:7051
+        tlsCACerts: 
+            pem: ../network/crypto-config/peerOrganizations/ngo.com/peers/devpeer/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
+    firstngo:
+        url: https://localhost:8051
+        tlsCACerts:
+            pem: ../network/crypto-config/peerOrganizations/ngo.com/peers/firstngo/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
+    devvol:
+        url: https://localhost:9051
+        tlsCACerts: 
+            pem: ../network/crypto-config/peerOrganizations/vol.com/peers/devvol/msp/tlscacerts/tlsvolunteersca.vol.com-cert.pem
+orderers:
+    orderer:
+        url: https://localhost:7050
+    tlsCACerts:
+        pem: ..//network/crypto-config/ordererOrganizations/gov.com/orderers/orderer/msp/tlscacerts/tlsgovca.gov.com-cert.pem
+certificateAuthorities:
+    ngoca:
+        url: https://localhost:7054
+        caName: ngoca
+        tlsCACerts:
+            pem: ../network/crypto-config/peerOrganizations/ngo.com/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
