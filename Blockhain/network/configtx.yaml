@@ -70,23 +70,23 @@ Orderer: &OrdererSetup
         AbsoluteMaxBytes: 98 MB
         PreferredMaxBytes: 512 KB
 Application: &ApplicationSetup
-    ACLs: &ACLsDefault
-        lscc/ChaincodeExists: /Channel/Application/Readers
-        lscc/GetDeploymentSpec: /Channel/Application/Readers
-        lscc/GetChaincodeData: /Channel/Application/Readers
-        lscc/GetInstantiatedChaincodes: /Channel/Application/StrictAdminPolicy
-        qscc/GetChainInfo: /Channel/Application/StrictAdminPolicy
-        qscc/GetBlockByNumber: /Channel/Application/Readers
-        qscc/GetBlockByHash: /Channel/Application/Readers
-        qscc/GetTransactionByID: /Channel/Application/Readers
-        qscc/GetBlockByTxID: /Channel/Application/Readers
-        cscc/GetConfigBlock: /Channel/Application/Readers
-        cscc/GetConfigTree: /Channel/Application/Readers
-        cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
-        peer/Propose: /Channel/Application/Writers
-        peer/ChaincodeToChaincode: /Channel/Application/Readers
-        event/Block: /Channel/Application/Readers
-        event/FilteredBlock: /Channel/Application/Readers
+    #ACLs: &ACLsDefault
+    #    lscc/ChaincodeExists: /Channel/Application/Readers
+    #    lscc/GetDeploymentSpec: /Channel/Application/Readers
+    #    lscc/GetChaincodeData: /Channel/Application/Readers
+    #    lscc/GetInstantiatedChaincodes: /Channel/Application/StrictAdminPolicy
+    #    qscc/GetChainInfo: /Channel/Application/StrictAdminPolicy
+    #    qscc/GetBlockByNumber: /Channel/Application/Readers
+    #    qscc/GetBlockByHash: /Channel/Application/Readers
+    #    qscc/GetTransactionByID: /Channel/Application/Readers
+    #    qscc/GetBlockByTxID: /Channel/Application/Readers
+    #    cscc/GetConfigBlock: /Channel/Application/Readers
+    #    cscc/GetConfigTree: /Channel/Application/Readers
+    #    cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
+    #    peer/Propose: /Channel/Application/Writers
+    #    peer/ChaincodeToChaincode: /Channel/Application/Readers
+    #    event/Block: /Channel/Application/Readers
+    #    event/FilteredBlock: /Channel/Application/Readers
     Policies: &ApplicationDefaultPolicies
         Readers:
             Type: ImplicitMeta
