@@ -20,8 +20,13 @@ async function invoke(){
         await gateway.connect(ccp,{wallet:wallet,identity:IDENTITY_NAME,discovery:{enabled:false,asLocalhost:true}})
         const newtork = await gateway.getNetwork(CHANNEL_NAME)
         const contract = newtork.getContract(CONTRACT_NAME)
-        response = await contract.evaluateTransaction("getUser","Zzocker")
-        console.log(response.Message)
+        // response = await contract.submitTransaction("setSecret","admin")
+        // response = await contract.submitTransaction("userRegistration","Zzocker","Pritam Singh","pw")
+        response = await contract.submitTransaction("userGateway","userLogin","Zzocker","pw")
+        
+        console.log(response.toString())
+        // console.log(response.Payload)
+        await gateway.disconnect()
     } catch (error) {
         console.log(error)
         process.exit(1)

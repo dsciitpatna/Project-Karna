@@ -7,11 +7,9 @@ import "github.com/hyperledger/fabric-protos-go/peer"
 import "fmt"
 
 type KarnaChaincode struct {
-	// Test bool
 }
 
 func (c *KarnaChaincode) Init(stub shim.ChaincodeStubInterface) peer.Response {
-	// c.Test = true
 	return peer.Response{
 		Status:  200,
 		Message: "successfully initiated",
