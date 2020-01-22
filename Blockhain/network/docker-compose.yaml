@@ -136,7 +136,7 @@ services:
         networks: 
             - karna
         ports: 
-            - 5984:5984
+            - 5983:5984
         volumes: 
             - data-devpeerworld:/opt/couchdb
     devvolworld:
@@ -148,6 +148,8 @@ services:
             - karna
         volumes: 
             - data-devvolworld:/opt/couchdb
+        ports: 
+            - 5984:5984
     firstngoworld:
         extends: 
             file: base.yaml

@@ -10,7 +10,7 @@ client:
         cryptoStore:
           path: "./credstore/budget/hfc-cvs"
 channels:
-    karna:
+    karnachannel:
         orderers:
             - orderer
         peers:

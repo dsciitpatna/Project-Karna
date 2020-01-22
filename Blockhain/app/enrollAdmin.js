@@ -1,27 +1,28 @@
 const fs = require('fs')
-const {X509WalletMixin,FileSystemWallet} = require('fabric-network')
 const yaml = require('js-yaml')
-const FabricCAServices = require('fabric-ca-client')
-const CONNECTION_PROFILE_PATH = 'connection.yaml'
-const ccp = yaml.safeLoad(fs.readFileSync(CONNECTION_PROFILE_PATH))
-const ngowallet = 'wallet/ngo/'
+const {X509WalletMixin,FileSystemWallet,Gateway} = require('fabric-network')
+const FabricCa = require('fabric-ca-client')
+const CONNECTION_PROFILE_PATH= "./connection.yaml"
+const WALLET_PATH="./wallet"
+const MSPID = "NGOMSP"
+
 async function main(){
     try {
-        const caInfo = ccp.certificateAuthorities['ngoca']
-        console.log(caInfo.url)
-        //console.log(fs.readFileSync(pem).toString())
-        const ca = new FabricCAServices(caInfo.url)
-        const wallet = new FileSystemWallet(ngowallet)
-        const admin = await wallet.exists('admin')
-        if (admin){
-            console.log("An identity for admin already ecists in walled ")
+        const ccp = yaml.safeLoad(fs.readFileSync(CONNECTION_PROFILE_PATH))
+        const wallet = new FileSystemWallet(WALLET_PATH)
+        const adminExists = await wallet.exists('admin')
+        console.log(ccp.certificateAuthorities.ngoca.url)
+        if (adminExists){
+            console.log("Admin already exists")
+            process.exit(1)
         }
-        const enrollment = await ca.enroll({enrollmentID:'admin',enrollmentSecret:'adminpw'})
-        const identity = X509WalletMixin.createIdentity('NGOMSP',enrollment.certificate,enrollment.key.toBytes())
+        const ca = new FabricCa(ccp.certificateAuthorities.ngoca.url)
+        const enrollment = await ca.enroll({enrollmentID:"admin",enrollmentSecret:"adminpw"})
+        const identity = X509WalletMixin.createIdentity(MSPID,enrollment.certificate,enrollment.key.toBytes())
         await wallet.import('admin',identity)
-        console.log('Successfully enrolled admin user "admin" and imported it into the wallet')
+        console.log("Successfully enrolled admin of ngo")
     } catch (error) {
-        console.error(`Failed to enroll admin user "admin": ${error}`)
+        console.log(error)
         process.exit(1)
     }
 }

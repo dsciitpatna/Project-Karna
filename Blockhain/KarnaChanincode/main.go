@@ -7,11 +7,11 @@ import "github.com/hyperledger/fabric-protos-go/peer"
 import "fmt"
 
 type KarnaChaincode struct {
-	Test bool
+	// Test bool
 }
 
 func (c *KarnaChaincode) Init(stub shim.ChaincodeStubInterface) peer.Response {
-	c.Test = true
+	// c.Test = true
 	return peer.Response{
 		Status:  200,
 		Message: "successfully initiated",
@@ -19,13 +19,7 @@ func (c *KarnaChaincode) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	}
 }
 func (c *KarnaChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-	if !c.Test {
-		creator, _ := stub.GetCreator()
-		isadmin, err := isAdmin(creator)
-		if err != nil || !isadmin {
-			return shim.Error("Cannot get admin or admin doesn't match")
-		}
-	}
+	
 	funName, args := stub.GetFunctionAndParameters()
 	if funName == "setSecret" {
 		return putSecret(stub, args)
@@ -39,8 +33,8 @@ func (c *KarnaChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response 
 	if funName == "getUser" {
 		return getUser(stub, args)
 	}
-	if funName == "getNgo"{
-		return getNgo(stub,args)
+	if funName == "getNgo" {
+		return getNgo(stub, args)
 	}
 	if funName == "userGateway" {
 		return userGateway(stub, args)
@@ -48,7 +42,7 @@ func (c *KarnaChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response 
 	if funName == "ngoGateway" {
 		return ngoGateway(stub, args)
 	}
-	if funName == "getAllMission"{
+	if funName == "getAllMission" {
 		return getAllMission(stub)
 	}
 	return peer.Response{

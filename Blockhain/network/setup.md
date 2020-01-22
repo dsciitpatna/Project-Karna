@@ -30,7 +30,10 @@ export CORE_PEER_ADDRESS=devvol:7051
 export CORE_PEER_LOCALMSPID=VolunteersMSP
 export CORE_PEER_MSPCONFIGPATH=/crypto-config/peerOrganizations/vol.com/users/Admin@vol.com/msp/
 
+peer channel create -f channel.tx -o orderer:7050 -c karnachannel
+
 installing chaincode 
 
 peer chaincode install -n karna -v 0 -p KarnaChanincode
 peer chaincode instantiate -n karna -v 0 -C karnachannel -c '{"args":[]}'
+

@@ -1,32 +1,34 @@
 const fs = require('fs')
-const yaml = require('js-yaml')
-const { Gateway,FileSystemWallet, X509WalletMixin } = require('fabric-network')
-const CONNECTION_PROFILE_PATH= './connection.yaml'
-const WALLET_PATH='./wallet/ngo'
-const cpp = yaml.safeLoad(fs.readFileSync(CONNECTION_PROFILE_PATH))
-console.log(cpp.certificateAuthorities)
+const yaml  = require('js-yaml')
+const {FileSystemWallet,Gateway,X509WalletMixin} = require("fabric-network")
+const CONNECTION_PROFILE_PATH= "./connection.yaml"
+const WALLET_PATH="./wallet"
+const IDENTITY_NAME = "AppClient"
+const MSPID = "NGOMSP"
+
 async function main(){
     try {
         const wallet = new FileSystemWallet(WALLET_PATH)
-        const userExists = await wallet.exists('ngoAdmin')
-        if (userExists){
-            console.log("org admin alredy exists")
+        let is = await wallet.exists(IDENTITY_NAME)
+        if (is){
+            console.log(`${IDENTITY_NAME} already exists`)
+            return
         }
-        const admin = await wallet.exists("admin")
-        if (!admin){
-            console.log('admin doesn exists')
-            return 
+        is = await wallet.exists("admin")
+        if (!is){
+            console.log("Admin doesn't exists")
+            return
         }
+        ccp = yaml.safeLoad(fs.readFileSync(CONNECTION_PROFILE_PATH))
         const gateway = new Gateway()
-        await gateway.connect(cpp,{wallet:wallet,identity:'admin',discovery:{ enabled: true, asLocalhost: true}})
+        await gateway.connect(ccp,{wallet:wallet,identity:"admin",discovery:{ enabled: true, asLocalhost: true}})
         const ca = gateway.getClient().getCertificateAuthority()
-        const adminIdentity = gateway.getCurrentIdentity()
-        // console.log(adminIdentity)
-        await ca.register({enrollmentID:'ngoAdmin',role:'admin',affiliation:'',role:"admin",enrollmentSecret:"pw"},adminIdentity)
-        const enrollment = await ca.enroll({enrollmentID:'ngoAdmin',enrollmentSecret:"pw"})
-        const identity = X509WalletMixin.createIdentity("NGOMSP",enrollment.certificate,enrollment.key.toBytes())
-        await wallet.import("ngoAdmin",identity)
-        console.log('Successfully registered and enrol ngoAdmin to the network')
+        const admin = gateway.getCurrentIdentity()
+        await ca.register({enrollmentID:IDENTITY_NAME,enrollmentSecret:"pw",role:'client',affiliation:""},admin)
+        const enrollment = await ca.enroll({enrollmentID:IDENTITY_NAME,enrollmentSecret:"pw",}) 
+        const identity = X509WalletMixin.createIdentity(MSPID,enrollment.certificate,enrollment.key.toBytes())
+        await wallet.import(IDENTITY_NAME,identity)
+        console.log(`${IDENTITY_NAME} successfully enrolled`)
     } catch (error) {
         console.log(error)
         process.exit(1)
