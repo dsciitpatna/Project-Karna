@@ -36,12 +36,15 @@ func ngoGateway(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 			if err!=nil{
 				return shim.Error(err.Error())
 			}
-		}
-
-		err = stub.PutState(key,getMarshaled(ngo))
-		if err!=nil{
+			err = stub.PutState(key,getMarshaled(ngo))
+			if err!=nil{
 			return shim.Error(err.Error())
-		}}
+			}}
+			/*2*/ if newargs[0]=="getNgoMission"{
+				return getNgoMission(stub,ngo.Missions,ngo.Username)
+			}
+		}
+		
 		// return shim.Success(nil)
 		return shim.Success(getMarshaled(ngo))
 	}
@@ -74,4 +77,35 @@ func createMission(stub shim.ChaincodeStubInterface,ngo *NGO,args []string) (err
 	}
 	ngo.Missions[args[0]]=target
 	return nil
+}
+func getNgo(stub shim.ChaincodeStubInterface,args []string) peer.Response{
+	if len(args)!=1{
+		return shim.Error("NGO user ID required")
+	}
+	key := getNGOKey(stub,args[0])
+	ngoByte,err:= stub.GetState(key)
+	if err!=nil{
+		return shim.Error(err.Error())
+	}
+	return shim.Success(ngoByte)
+}
+func getNgoMission(stub shim.ChaincodeStubInterface,mission map[string]int64,username string) peer.Response{
+	result := []struct {
+		MDetails Mission `json:"mission_details"`
+		Target int64 `json:"target"`
+	}{}
+	for k,v:= range mission{
+		key := getMissionKey(stub,username,k)
+		temp,err:= getMission(stub,key)
+		if err!=nil{
+			return shim.Error(err.Error())
+		}
+		singleResult := struct{
+			MDetails Mission `json:"mission_details"`
+			Target int64 `json:"target"`
+		}{temp,v}
+		result = append(result,singleResult)
+	}
+	output,_:= json.Marshal(result)
+	return shim.Success(output)
 }

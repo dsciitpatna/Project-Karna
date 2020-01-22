@@ -35,15 +35,64 @@ func userGateway(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 				if err != nil {
 					return shim.Error(err.Error())
 				}
-			}
-
-			err = stub.PutState(key, getMarshaled(user))
-			if err != nil {
+				err = stub.PutState(key, getMarshaled(user))
+				if err != nil {
 				return shim.Error(err.Error())
+			}
+			}
+			/*2*/ if newargs[0]=="getDonatedMission"{
+				return getUserDonations(stub,user.Donation)
 			}
 		}
 		return shim.Success(getMarshaled(user))
 	}
+}
+func getAllMission(stub shim.ChaincodeStubInterface) peer.Response {
+	missionIterator, err := stub.GetStateByPartialCompositeKey(MISSIONSKEY, []string{})
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var mission []Mission
+	defer missionIterator.Close()
+	for missionIterator.HasNext() {
+		missionByte, err := missionIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		var temp Mission
+		json.Unmarshal(missionByte.GetValue(), &temp)
+		mission = append(mission, temp)
+	}
+	resultByte, _ := json.Marshal(mission)
+	return shim.Success(resultByte)
+}
+func getUserDonations(stub shim.ChaincodeStubInterface, donations map[string]int64) peer.Response {
+	result := []struct {
+		MDetails Mission `json:"mission_details"`
+		Money    int64   `json:"money_given"`
+	}{}
+	for k, v := range donations {
+		temp, err := getMission(stub, k)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		singleResult := struct {
+			MDetails Mission `json:"mission_details"`
+			Money    int64   `json:"money_given"`
+		}{temp, v}
+		result = append(result, singleResult)
+	}
+	output, _ := json.Marshal(result)
+	return shim.Success(output)
+}
+func getMission(stub shim.ChaincodeStubInterface, mission_id string) (Mission, error) {
+	missionByte, err := stub.GetState(mission_id)
+	if err != nil {
+		return Mission{}, err
+	}
+	var mission Mission
+	json.Unmarshal(missionByte, &mission)
+	return mission, nil
 }
 func donate(stub shim.ChaincodeStubInterface, user *User, args []string) error {
 	// args[0]=ngo_id,args[1]=mission_name,args[2]=donation
@@ -58,13 +107,13 @@ func donate(stub shim.ChaincodeStubInterface, user *User, args []string) error {
 	var mission Mission
 	json.Unmarshal(byteM, &mission)
 	money, err := strconv.ParseInt(args[2], 10, 64)
-	if err!=nil{
+	if err != nil {
 		return nil
 	}
 	mission.Total += money
 	mission.Donation[user.Username] += money
-	err = stub.PutState(key,getMarshaled(mission))
-	if err!=nil{
+	err = stub.PutState(key, getMarshaled(mission))
+	if err != nil {
 		return err
 	}
 	user.Donation[key] += money
@@ -160,7 +209,7 @@ func getSecretKey(stub shim.ChaincodeStubInterface) []byte {
 	key, _ := stub.GetState("adminkey")
 	return key
 }
-func getUserTest(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+func getUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 1 {
 		return shim.Error("Need 1 arg")
 	}

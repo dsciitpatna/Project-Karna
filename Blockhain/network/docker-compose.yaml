@@ -157,3 +157,23 @@ services:
             - karna
         volumes: 
             - data-firstngoworld:/opt/couchdb
+    cli:
+        container_name: cli
+        image: hyperledger/fabric-tools:latest
+        tty: true
+        stdin_open: true
+        environment: 
+            - GOPATH=/opt/gopath
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - FABRIC_LOGGING_SPEC=INFO
+            - CORE_PEER_ID=cli
+            - CORE_PEER_ADDRESS=devpeer:7051
+            - CORE_PEER_LOCALMSPID=NGOMSP
+            - CORE_PEER_MSPCONFIGPATH=/crypto-config/peerOrganizations/ngo.com/users/Admin@ngo.com/msp #will be same for all NGO peers and Vol peers
+        volumes: 
+            - ./crypto-config:/crypto-config
+            - ./channel-artifacts:/channel-artifacts
+            - /var/run/:/host/var/run/
+            - ../KarnaChanincode:/opt/gopath/src/KarnaChanincode
+        networks: 
+            - karna

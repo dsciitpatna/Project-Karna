@@ -1,11 +1,14 @@
 name: "karna~network"
-version: "0"
+version: "1.0"
 description: "Karna netwokr connection profile"
-clients:
-    ngo:
-        organizations: NGOs
-    vol: 
-        organizations: Volunteers
+client:
+    organization: NGOs
+    credentialStore:
+        # State
+        path: "./credstore/budget/hfc-kvs"
+        # Public & Private key
+        cryptoStore:
+          path: "./credstore/budget/hfc-cvs"
 channels:
     karna:
         orderers:
@@ -28,39 +31,44 @@ channels:
                 eventSource: true
 organizations:
     NGOs:
-        mspid:
+        mspid: NGOMSP
         peers:
             - devpeer
             - firstngo
         certificateAuthorities:
             - ngoca
     Volunteers:
-        mspid:
+        mspid: VolunteersMSP
         peers:
             - devvol
         certificateAuthorities:
             - volunteersca
 peers:
     devpeer:
-        url: https://localhost:7051
-        tlsCACerts: 
-            pem: ../network/crypto-config/peerOrganizations/ngo.com/peers/devpeer/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
+        url: grpc://localhost:7051
+        #tlsCACerts: 
+        #    pem: ../network/crypto-config/peerOrganizations/ngo.com/peers/devpeer/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
     firstngo:
-        url: https://localhost:8051
-        tlsCACerts:
-            pem: ../network/crypto-config/peerOrganizations/ngo.com/peers/firstngo/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
+        url: grpc://localhost:8051
+        #tlsCACerts:
+        #    pem: ../network/crypto-config/peerOrganizations/ngo.com/peers/firstngo/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
     devvol:
-        url: https://localhost:9051
-        tlsCACerts: 
-            pem: ../network/crypto-config/peerOrganizations/vol.com/peers/devvol/msp/tlscacerts/tlsvolunteersca.vol.com-cert.pem
+        url: grpc://localhost:9051
+        #tlsCACerts: 
+        #    pem: ../network/crypto-config/peerOrganizations/vol.com/peers/devvol/msp/tlscacerts/tlsvolunteersca.vol.com-cert.pem
 orderers:
     orderer:
-        url: https://localhost:7050
-    tlsCACerts:
-        pem: ..//network/crypto-config/ordererOrganizations/gov.com/orderers/orderer/msp/tlscacerts/tlsgovca.gov.com-cert.pem
+        url: grpc://localhost:7050
+    #tlsCACerts:
+    #    pem: ../network/crypto-config/ordererOrganizations/gov.com/orderers/orderer/msp/tlscacerts/tlsgovca.gov.com-cert.pem
 certificateAuthorities:
     ngoca:
-        url: https://localhost:7054
+        url: http://localhost:7054
         caName: ngoca
-        tlsCACerts:
-            pem: ../network/crypto-config/peerOrganizations/ngo.com/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
+        #tlsCACerts:
+        #    pem: ../network/crypto-config/peerOrganizations/ngo.com/msp/tlscacerts/tlsngoca.ngo.com-cert.pem
+    volunteersca:
+        url: http://localhost:9054
+        caName: volunteersca
+        #tlsCACerts:
+        #    pem: ../network/crypto-config/peerOrganizations/vol.com/msp/tlscacerts/tlsvolunteersca.vol.com-cert.pem
